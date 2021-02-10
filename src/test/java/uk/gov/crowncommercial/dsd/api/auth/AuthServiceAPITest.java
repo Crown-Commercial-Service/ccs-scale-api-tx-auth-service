@@ -58,7 +58,7 @@ public class AuthServiceAPITest {
   public void getToken() throws Exception {
 
     // Mock the behaviour of the Spree v2 API
-    AdviceWith.adviceWith(camelContext, AuthServiceRouteBuilder.ROUTE_ID_POST_TOKEN, builder -> {
+    AdviceWith.adviceWith(camelContext, AuthServiceRouteBuilder.ROUTE_ID_GET_TOKEN, builder -> {
       builder.weaveByToUri("http://spree-host/spree_oauth/token?bridgeEndpoint=true").replace()
           .setBody()
           .constant("{\"access_token\": \"VjEs16MG7SGmXXyurcGTiVC1Q2Ui7jRRlcLiRgtmC-A\","
