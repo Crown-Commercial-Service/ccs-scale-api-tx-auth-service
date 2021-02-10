@@ -7,6 +7,7 @@ import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
@@ -72,14 +73,14 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
     from(ROUTE_POST_TOKEN)
       .routeId(ROUTE_ID_POST_TOKEN)
       .streamCaching()
-      .log(LoggingLevel.INFO, "Endpoint /token invoked, calling '{}'", spreeApiHost)
+      .log(LoggingLevel.INFO, "Calling: " + String.format(SPREE_TOKEN_ENDPOINT_TEMPLATE, spreeApiHost))
       .marshal().json(JsonLibrary.Jackson)
-      .setHeader(Exchange.HTTP_METHOD, constant("POST"))
-      .to(String.format(SPREE_TOKEN_ENDPOINT_TEMPLATE, spreeApiHost)).setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
-      .log(LoggingLevel.INFO, "${body}")
-      .convertBodyTo(String.class).unmarshal().json()
+      .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
+      .to(String.format(SPREE_TOKEN_ENDPOINT_TEMPLATE, spreeApiHost))
+      .setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
+      .log(LoggingLevel.INFO, "Token issued: ${body}")
+      .unmarshal().json()
       .to(ROUTE_FINALISE_RESPONSE);
-    
     
     /*
      * Get Account
@@ -91,11 +92,10 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
     from(ROUTE_GET_ACCOUNT)
       .routeId(ROUTE_ID_GET_ACCOUNT)
       .log(LoggingLevel.INFO, "Endpoint get-account invoked")
-      // Pass through Bearer auth if given
-      .setHeader("Authorization", simple("${header.Authorization}"))
       .setHeader(Exchange.HTTP_METHOD, constant("GET"))
-      .to(String.format(SPREE_ACCOUNT_ENDPOINT_TEMPLATE, spreeApiHost)).setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
-      .convertBodyTo(String.class).unmarshal().json()
+      .to(String.format(SPREE_ACCOUNT_ENDPOINT_TEMPLATE, spreeApiHost))
+      .setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
+      .unmarshal().json()
       .to(ROUTE_FINALISE_RESPONSE);
     
     /*
@@ -110,13 +110,11 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .streamCaching()
       .log(LoggingLevel.INFO, "Endpoint create-account invoked")
       .log(LoggingLevel.INFO, "${body}")
-      // Pass through Bearer auth if given
-      .setHeader("Authorization", simple("${header.Authorization}"))
       .setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
-      .setHeader(Exchange.HTTP_METHOD, constant("POST"))
+      .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
       .marshal().json(JsonLibrary.Jackson)
       .to(String.format(SPREE_ACCOUNT_ENDPOINT_TEMPLATE, spreeApiHost))
-      .convertBodyTo(String.class).unmarshal().json()
+      .unmarshal().json()
       .to(ROUTE_FINALISE_RESPONSE);
     
     /*
@@ -130,16 +128,17 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .routeId(ROUTE_ID_PATCH_ACCOUNT)
       .streamCaching()
       .log(LoggingLevel.INFO, "Endpoint update-account invoked")
-      // Pass through Bearer auth if given
-      .setHeader("Authorization", simple("${header.Authorization}"))
       .setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
-      .setHeader(Exchange.HTTP_METHOD, constant("PATCH"))
+      .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.PATCH))
       .marshal().json(JsonLibrary.Jackson)
       .to(String.format(SPREE_ACCOUNT_ENDPOINT_TEMPLATE, spreeApiHost))
-      .convertBodyTo(String.class).unmarshal().json()
+      .unmarshal().json()
       .log(LoggingLevel.INFO, String.format(SPREE_ACCOUNT_ENDPOINT_TEMPLATE, spreeApiHost))
       .to(ROUTE_FINALISE_RESPONSE);
 
+    /*
+     * Finalise Response
+     */
     from(ROUTE_FINALISE_RESPONSE)
       .removeHeaders("*")
       .setHeader(ACCESS_CONTROL_ALLOW_ORIGIN, constant("*"));

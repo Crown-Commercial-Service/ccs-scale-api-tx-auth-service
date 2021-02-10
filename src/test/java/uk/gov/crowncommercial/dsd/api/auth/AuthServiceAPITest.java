@@ -7,7 +7,6 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.builder.AdviceWith;
 import org.apache.camel.test.spring.CamelSpringBootRunner;
 import org.apache.camel.test.spring.MockEndpointsAndSkip;
-import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -21,7 +20,6 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import uk.gov.crowncommercial.dsd.api.auth.routes.AuthServiceRouteBuilder;
 
-@Ignore
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @MockEndpointsAndSkip("http://spree-host")
@@ -29,11 +27,20 @@ import uk.gov.crowncommercial.dsd.api.auth.routes.AuthServiceRouteBuilder;
 @TestPropertySource(properties = {"SPREE_API_HOST=http://spree-host",})
 public class AuthServiceAPITest {
 
-  @Value("${api.paths.base}")
-  private String apiBasePath;
+  @Value("${api.paths.base.oauth}")
+  private String apiOauthBasePath;
 
-  @Value("${api.paths.get-token}")
-  private String apiGetToken;
+  @Value("${api.paths.base.catalog}")
+  private String apiCatalogBasePath;
+
+  @Value("${api.paths.post-token}")
+  private String apiPostToken;
+
+  @Value("${api.paths.get-account}")
+  private String apiGetAccount;
+
+  @Value("${SPREE_API_HOST}")
+  private String spreeApiHost;
 
   @LocalServerPort
   private int port;
@@ -44,7 +51,7 @@ public class AuthServiceAPITest {
   @BeforeEach
   public void setUp() {
     RestAssured.port = port;
-    RestAssured.basePath = apiBasePath;
+    RestAssured.basePath = apiOauthBasePath;
   }
 
   @Test
@@ -52,9 +59,8 @@ public class AuthServiceAPITest {
 
     // Mock the behaviour of the Spree v2 API
     AdviceWith.adviceWith(camelContext, AuthServiceRouteBuilder.ROUTE_ID_POST_TOKEN, builder -> {
-      builder
-          .weaveByToUri("http://spree-host/spree_oauth/token?httpMethod=POST&bridgeEndpoint=true")
-          .replace().setBody()
+      builder.weaveByToUri("http://spree-host/spree_oauth/token?bridgeEndpoint=true").replace()
+          .setBody()
           .constant("{\"access_token\": \"VjEs16MG7SGmXXyurcGTiVC1Q2Ui7jRRlcLiRgtmC-A\","
               + "\"token_type\": \"Bearer\",\"expires_in\": 7200,"
               + "\"refresh_token\": \"OZGndgBdsBPhShM-Liy-YsImh7Mld6sEU3NzqtdXKO4\","
@@ -64,7 +70,7 @@ public class AuthServiceAPITest {
     // @formatter:off
     given()
     .when()
-      .post(apiGetToken)
+      .post(apiPostToken)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)
