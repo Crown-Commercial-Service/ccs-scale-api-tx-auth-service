@@ -34,8 +34,16 @@ api:
     base: 
       oauth: /oauth2
       catalog: /catalog
-    post-token: /token
-    get-account: /account
+    token: /token
+    account: /account
+spree:
+  api:
+    paths:
+      base: 
+        oauth: /spree_oauth
+        storefront: /api/v2/storefront
+      token: /token
+      account: /account
       
 ---
 spring:
@@ -46,8 +54,3 @@ camel:
       mapping:
         # Mimic API Gateway path prefix (allows switching envs between local and AWS in Postman)
         contextPath: /auth-service/*
-
-logging:
-  level:
-    uk.gov.crowncommercial.dsd.api.auth: DEBUG
-    org.apache.camel: INFO

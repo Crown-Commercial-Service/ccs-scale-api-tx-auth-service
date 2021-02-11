@@ -5,6 +5,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
+/**
+ * CCS Account.
+ *
+ */
 @Data
 @JsonPropertyOrder({"email", "addresses"})
 public class AccountResponse {

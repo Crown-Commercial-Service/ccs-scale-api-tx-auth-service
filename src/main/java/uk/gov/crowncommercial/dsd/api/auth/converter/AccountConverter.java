@@ -1,31 +1,33 @@
 package uk.gov.crowncommercial.dsd.api.auth.converter;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.apache.camel.TypeConverters;
 import org.springframework.stereotype.Component;
 import uk.gov.crowncommercial.dsd.api.auth.model.AccountResponse;
 import uk.gov.crowncommercial.dsd.api.auth.model.Address;
+import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Account;
+import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.AddressAttributes;
 import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Included;
-import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.IncludedAttributes;
-import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.SpreeAccount;
 
+/**
+ * Converts the Account response from Spree into the CCS Account response.
+ */
 @Component
 public class AccountConverter implements TypeConverters {
 
-
-  public AccountResponse createFrom(final SpreeAccount payload) {
+  public AccountResponse createFrom(final Account payload) {
 
     AccountResponse response = new AccountResponse();
     response.setEmail(payload.getData().getAttributes().getEmail());
-    response.setAddresses(new ArrayList<Address>());
+    List<Address> addresses = new ArrayList<>();
 
     if (payload.getIncluded() != null) {
       for (Included included : payload.getIncluded()) {
 
-        IncludedAttributes atts = included.getAttributes();
+        AddressAttributes atts = included.getAttributes();
 
         Address address = new Address();
-
         address.setId(included.getId());
         address.setFirstName(atts.getFirstName());
         address.setLastName(atts.getLastName());
@@ -39,27 +41,24 @@ public class AccountConverter implements TypeConverters {
         address.setCountryIso3(atts.getCountryIso3());
         address.setCompany(atts.getCompany());
 
-        if (payload.getData().getRelationships().getDefaultBillingAddress().getData() != null
-            && payload.getData().getRelationships().getDefaultBillingAddress().getData().getId()
-                .equals(included.getId())) {
-          address.setDefaultBillingAddress(true);
-        } else {
-          address.setDefaultBillingAddress(false);
-        }
+        address.setDefaultBillingAddress(
+            payload.getData().getRelationships().getDefaultBillingAddress().getData() != null
+                && payload.getData().getRelationships().getDefaultBillingAddress().getData().getId()
+                    .equals(included.getId()));
 
-        if (payload.getData().getRelationships().getDefaultShippingAddress().getData() != null
-            && payload.getData().getRelationships().getDefaultShippingAddress().getData().getId()
-                .equals(included.getId())) {
-          address.setDefaultShippingAddress(true);
-        } else {
-          address.setDefaultShippingAddress(false);
-        }
+        address.setDefaultShippingAddress(
+            payload.getData().getRelationships().getDefaultShippingAddress().getData() != null
+                && payload.getData().getRelationships().getDefaultShippingAddress().getData()
+                    .getId().equals(included.getId()));
 
-        response.getAddresses().add(address);
+        addresses.add(address);
       }
     }
 
-    return response;
+    if (!addresses.isEmpty()) {
+      response.setAddresses(addresses);
+    }
 
+    return response;
   }
 }

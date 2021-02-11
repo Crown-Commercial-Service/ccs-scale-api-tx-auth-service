@@ -1,22 +1,24 @@
 package uk.gov.crowncommercial.dsd.api.auth.model.spree.account;
 
+import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+/**
+ * Spree Account.
+ *
+ */
 @Value
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GenericData {
+public class Account {
 
-  @JsonProperty("id")
-  String id;
+  @JsonProperty("data")
+  AccountData data;
 
-  @JsonProperty("type")
-  String type;
-
+  @JsonProperty("included")
+  List<Included> included;
 }

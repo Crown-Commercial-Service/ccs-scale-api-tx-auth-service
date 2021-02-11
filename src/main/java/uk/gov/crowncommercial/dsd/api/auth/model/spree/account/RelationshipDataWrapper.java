@@ -3,25 +3,18 @@ package uk.gov.crowncommercial.dsd.api.auth.model.spree.account;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.Value;
 
+/**
+ * Spree Relationship Data Wrapper.
+ *
+ */
 @Value
 @NoArgsConstructor(force = true, access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Data {
+public class RelationshipDataWrapper {
 
-  @JsonProperty("id")
-  String id;
-
-  @JsonProperty("type")
-  String type;
-
-  @JsonProperty("attributes")
-  DataAttributes attributes;
-
-  @JsonProperty("relationships")
-  Relationships relationships;
+  @JsonProperty("data")
+  RelationshipData data;
 }
