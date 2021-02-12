@@ -4,7 +4,6 @@ import static org.springframework.http.HttpHeaders.ACCESS_CONTROL_ALLOW_ORIGIN;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import org.apache.camel.Exchange;
 import org.apache.camel.LoggingLevel;
-import org.apache.camel.Processor;
 import org.apache.camel.builder.endpoint.EndpointRouteBuilder;
 import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.http.base.HttpOperationFailedException;
@@ -16,9 +15,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
-import uk.gov.crowncommercial.dsd.api.auth.converter.AccountConverter;
+import uk.gov.crowncommercial.dsd.api.auth.logic.AccountResponseProcessor;
 import uk.gov.crowncommercial.dsd.api.auth.logic.HttpOperationFailedExceptionProcessor;
-import uk.gov.crowncommercial.dsd.api.auth.logic.TokenRequestValidator;
 import uk.gov.crowncommercial.dsd.api.auth.model.ApiError;
 import uk.gov.crowncommercial.dsd.api.auth.model.ApiErrors;
 import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Account;
@@ -33,7 +31,7 @@ import uk.gov.crowncommercial.dsd.api.auth.model.token.TokenResponse;
 @RequiredArgsConstructor
 public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
 
-  private static final String SPREE_DUMMY_ENDPOINT =
+  public static final String SPREE_DUMMY_ENDPOINT =
       "http://spree-api?headerFilterStrategy=#spreeApiHeaderFilter";
 
   private static final String DEBUG_LOG_MSG = "log:DEBUG?showBody=false&showHeaders=true";
@@ -70,13 +68,10 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
   private String spreeApiHost;
 
   @Autowired
-  AccountConverter accountConverter;
+  AccountResponseProcessor accountResponseProcessor;
 
   @Autowired
   HttpOperationFailedExceptionProcessor httpExceptionProcessor;
-
-  @Autowired
-  private TokenRequestValidator tokenRequestValidator;
 
   @Override
   public void configure() throws Exception {
@@ -93,8 +88,8 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
      */
     onException(HttpOperationFailedException.class)
     .handled(true)
-    .process(httpExceptionProcessor);
-    //.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500));
+    .process(httpExceptionProcessor)
+    .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(INTERNAL_SERVER_ERROR.value()));
 
     onException(Exception.class)
     .handled(true)
@@ -112,9 +107,6 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
 
     from(ROUTE_GET_TOKEN)
       .routeId(ROUTE_ID_GET_TOKEN)
-      .streamCaching()
-      // Validate request
-      .process(tokenRequestValidator)
       .log(LoggingLevel.INFO, "Endpoint get-token invoked")
       .marshal().json()
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
@@ -133,20 +125,13 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
 
     from(ROUTE_GET_ACCOUNT)
       .routeId(ROUTE_ID_GET_ACCOUNT)
-      //.streamCaching()
       .log(LoggingLevel.INFO, "Endpoint get-account invoked")
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.GET))
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.storefront}}{{spree.api.paths.account}}?include=default_billing_address&default_shipping_address"))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
-      .process(new Processor() {
-        @Override
-        public void process(Exchange exchange) throws Exception {
-          Account payload = exchange.getIn().getBody(Account.class);
-          exchange.getIn().setBody(accountConverter.createFrom(payload));
-        }
-      })
+      .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
     
     /*
@@ -158,22 +143,14 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
 
     from(ROUTE_CREATE_ACCOUNT)
       .routeId(ROUTE_ID_CREATE_ACCOUNT)
-      .streamCaching()
       .log(LoggingLevel.INFO, "Endpoint create-account invoked")
-      .log(LoggingLevel.INFO, "${body}")
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
       .marshal().json(JsonLibrary.Jackson)
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.storefront}}{{spree.api.paths.account}}"))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
-      .process(new Processor() {
-        @Override
-        public void process(Exchange exchange) throws Exception {
-          Account payload = exchange.getIn().getBody(Account.class);
-          exchange.getIn().setBody(accountConverter.createFrom(payload));
-        }
-      })
+      .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
     
     /*
@@ -185,7 +162,6 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
 
     from(ROUTE_UPDATE_ACCOUNT)
       .routeId(ROUTE_ID_UPDATE_ACCOUNT)
-      .streamCaching()
       .log(LoggingLevel.INFO, "Endpoint update-account invoked")
       .setHeader(Exchange.CONTENT_TYPE, simple(MediaType.APPLICATION_JSON_VALUE))
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.PATCH))
@@ -194,13 +170,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
-      .process(new Processor() {
-        @Override
-        public void process(Exchange exchange) throws Exception {
-          Account payload = exchange.getIn().getBody(Account.class);
-          exchange.getIn().setBody(accountConverter.createFrom(payload));
-        }
-      })
+      .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
 
     /*
