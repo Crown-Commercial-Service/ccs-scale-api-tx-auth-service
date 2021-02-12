@@ -1,4 +1,4 @@
-package uk.gov.crowncommercial.dsd.api.auth.model;
+package uk.gov.crowncommercial.dsd.api.auth.model.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Value;

@@ -1,4 +1,4 @@
-package uk.gov.crowncommercial.dsd.api.auth.model;
+package uk.gov.crowncommercial.dsd.api.auth.model.account;
 
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;

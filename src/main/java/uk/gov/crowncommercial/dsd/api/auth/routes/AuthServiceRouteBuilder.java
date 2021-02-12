@@ -17,11 +17,12 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import lombok.RequiredArgsConstructor;
 import uk.gov.crowncommercial.dsd.api.auth.converter.AccountConverter;
+import uk.gov.crowncommercial.dsd.api.auth.logic.HttpOperationFailedExceptionProcessor;
 import uk.gov.crowncommercial.dsd.api.auth.logic.TokenRequestValidator;
 import uk.gov.crowncommercial.dsd.api.auth.model.ApiError;
 import uk.gov.crowncommercial.dsd.api.auth.model.ApiErrors;
-import uk.gov.crowncommercial.dsd.api.auth.model.TokenResponse;
 import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Account;
+import uk.gov.crowncommercial.dsd.api.auth.model.token.TokenResponse;
 
 /**
  * Authorisation Service RouteBuilder.
@@ -72,6 +73,9 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
   AccountConverter accountConverter;
 
   @Autowired
+  HttpOperationFailedExceptionProcessor httpExceptionProcessor;
+
+  @Autowired
   private TokenRequestValidator tokenRequestValidator;
 
   @Override
@@ -89,15 +93,8 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
      */
     onException(HttpOperationFailedException.class)
     .handled(true)
-    .process(new Processor() {
-      @Override
-      public void process(Exchange exchange) throws Exception {   
-        HttpOperationFailedException caused = exchange.getProperty(Exchange.EXCEPTION_CAUGHT, HttpOperationFailedException.class);
-        exchange.getIn().setBody(ApiErrors.builder().error(new ApiError(caused.getStatusText(), INTERNAL_SERVER_ERROR.getReasonPhrase(), caused.getResponseBody())).build());
-      }
-    })
-    .setHeader(Exchange.HTTP_RESPONSE_CODE, constant(INTERNAL_SERVER_ERROR.value()))
-    .to(ROUTE_FINALISE_RESPONSE);
+    .process(httpExceptionProcessor);
+    //.setHeader(Exchange.HTTP_RESPONSE_CODE, constant(500));
 
     onException(Exception.class)
     .handled(true)
