@@ -64,9 +64,6 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
   @Value("${api.paths.account}")
   private String apiPathAccount;
 
-  // @Value("${SPREE_API_HOST}")
-  // private String spreeApiHost;
-
   @Autowired
   AccountResponseProcessor accountResponseProcessor;
 
