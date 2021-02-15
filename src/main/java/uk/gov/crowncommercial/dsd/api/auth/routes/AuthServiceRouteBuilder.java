@@ -64,8 +64,8 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
   @Value("${api.paths.account}")
   private String apiPathAccount;
 
-  @Value("${SPREE_API_HOST}")
-  private String spreeApiHost;
+  // @Value("${SPREE_API_HOST}")
+  // private String spreeApiHost;
 
   @Autowired
   AccountResponseProcessor accountResponseProcessor;
@@ -114,6 +114,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(TokenResponse.class))
+      .to(DEBUG_LOG_MSG)
       .to(ROUTE_FINALISE_RESPONSE);
     
     /*
@@ -131,6 +132,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
+      .to(DEBUG_LOG_MSG)
       .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
     
@@ -150,6 +152,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
+      .to(DEBUG_LOG_MSG)
       .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
     
@@ -170,6 +173,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
+      .to(DEBUG_LOG_MSG)
       .process(accountResponseProcessor)
       .to(ROUTE_FINALISE_RESPONSE);
 

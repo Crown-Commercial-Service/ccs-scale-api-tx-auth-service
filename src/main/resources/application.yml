@@ -26,7 +26,8 @@ server:
     accesslog:
       enabled: true
 
-# Spree service creds via environment only
+
+# Spree (Specify `SPREE_API_HOST` via environment)
 
 # Route configuration
 api:

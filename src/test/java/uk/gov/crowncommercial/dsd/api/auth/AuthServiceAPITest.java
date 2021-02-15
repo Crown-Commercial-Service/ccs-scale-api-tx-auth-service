@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.TestPropertySource;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
@@ -21,7 +22,9 @@ import uk.gov.crowncommercial.dsd.api.auth.routes.AuthServiceRouteBuilder;
 
 @RunWith(CamelSpringBootRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-@TestPropertySource(properties = {"SPREE_API_HOST=http://spree-host",})
+@TestPropertySource(properties = {"SPREE_API_HOST=http://spree-api",})
+// @MockEndpointsAndSkip("http://spree-api")
+@ActiveProfiles("test")
 public class AuthServiceAPITest {
 
   @Value("${api.paths.base.oauth}")
@@ -38,6 +41,9 @@ public class AuthServiceAPITest {
 
   @Value("${SPREE_API_HOST}")
   private String spreeApiHost;
+
+  // @EndpointInject("mock:http://spree-api")
+  // protected MockEndpoint spree;
 
   @LocalServerPort
   private int port;

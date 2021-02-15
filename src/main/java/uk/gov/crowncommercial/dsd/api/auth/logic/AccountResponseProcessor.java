@@ -16,7 +16,7 @@ public class AccountResponseProcessor implements Processor {
   @Override
   public void process(Exchange exchange) throws Exception {
     Account payload = exchange.getIn().getBody(Account.class);
-    exchange.getIn().setBody(accountConverter.createFrom(payload));
+    exchange.getIn().setBody(accountConverter.toAccountResponse(payload));
   }
 
 }

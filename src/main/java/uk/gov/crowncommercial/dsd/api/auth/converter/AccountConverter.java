@@ -16,7 +16,7 @@ import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Included;
 @Component
 public class AccountConverter implements TypeConverters {
 
-  public AccountResponse createFrom(final Account payload) {
+  public AccountResponse toAccountResponse(final Account payload) {
 
     AccountResponse response = new AccountResponse();
     response.setEmail(payload.getData().getAttributes().getEmail());
@@ -26,7 +26,6 @@ public class AccountConverter implements TypeConverters {
       for (Included included : payload.getIncluded()) {
 
         AddressAttributes atts = included.getAttributes();
-
         Address address = new Address();
         address.setId(included.getId());
         address.setFirstName(atts.getFirstName());
