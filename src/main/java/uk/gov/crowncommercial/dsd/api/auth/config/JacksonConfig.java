@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Jackson configuration
+ * Jackson configuration.
  */
 @Configuration
 @Slf4j

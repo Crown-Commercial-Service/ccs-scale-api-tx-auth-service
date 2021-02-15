@@ -1,14 +1,13 @@
 package uk.gov.crowncommercial.dsd.api.auth.converter;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.apache.camel.TypeConverters;
 import org.springframework.stereotype.Component;
 import uk.gov.crowncommercial.dsd.api.auth.model.account.AccountResponse;
 import uk.gov.crowncommercial.dsd.api.auth.model.account.Address;
 import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Account;
 import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.AddressAttributes;
-import uk.gov.crowncommercial.dsd.api.auth.model.spree.account.Included;
 
 /**
  * Converts the Account response from Spree into the CCS Account response.
@@ -20,14 +19,13 @@ public class AccountConverter implements TypeConverters {
 
     AccountResponse response = new AccountResponse();
     response.setEmail(payload.getData().getAttributes().getEmail());
-    List<Address> addresses = new ArrayList<>();
 
     if (payload.getIncluded() != null) {
-      for (Included included : payload.getIncluded()) {
+      List<Address> addresses = payload.getIncluded().stream().map(i -> {
 
-        AddressAttributes atts = included.getAttributes();
+        AddressAttributes atts = i.getAttributes();
         Address address = new Address();
-        address.setId(included.getId());
+        address.setId(i.getId());
         address.setFirstName(atts.getFirstName());
         address.setLastName(atts.getLastName());
         address.setAddress1(atts.getAddress1());
@@ -43,19 +41,20 @@ public class AccountConverter implements TypeConverters {
         address.setDefaultBillingAddress(
             payload.getData().getRelationships().getDefaultBillingAddress().getData() != null
                 && payload.getData().getRelationships().getDefaultBillingAddress().getData().getId()
-                    .equals(included.getId()));
+                    .equals(i.getId()));
 
         address.setDefaultShippingAddress(
             payload.getData().getRelationships().getDefaultShippingAddress().getData() != null
                 && payload.getData().getRelationships().getDefaultShippingAddress().getData()
-                    .getId().equals(included.getId()));
+                    .getId().equals(i.getId()));
 
-        addresses.add(address);
+        return address;
+
+      }).collect(Collectors.toList());
+
+      if (!addresses.isEmpty()) {
+        response.setAddresses(addresses);
       }
-    }
-
-    if (!addresses.isEmpty()) {
-      response.setAddresses(addresses);
     }
 
     return response;
