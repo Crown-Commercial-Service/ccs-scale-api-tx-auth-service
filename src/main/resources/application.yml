@@ -1,0 +1,57 @@
+camel:
+  springboot:
+    name: ScaleAPITxAuthorisationService
+  
+  component:
+    servlet:
+      mapping:
+        # Important: must match any proxy request from API Gateway
+        contextPath: /*
+        
+  dataformat:
+    json-jackson:
+      object-mapper: jacksonObjectMapper
+          
+logging:
+  level:
+    uk.gov.crowncommercial.dsd.api.auth: DEBUG
+    org.apache.camel: INFO
+    org.springframework: INFO
+    org.apache.tomcat: INFO
+    org.apache.catalina: INFO
+    
+server:
+  port: 9040
+  tomcat:
+    accesslog:
+      enabled: true
+
+
+# Spree (Specify `SPREE_API_HOST` via environment)
+
+# Route configuration
+api:
+  paths:
+    base: 
+      oauth: /oauth2
+      catalog: /catalog
+    token: /token
+    account: /account
+spree:
+  api:
+    paths:
+      base: 
+        oauth: /spree_oauth
+        storefront: /api/v2/storefront
+      token: /token
+      account: /account
+      
+---
+spring:
+  profiles: local
+camel:
+  component:
+    servlet:
+      mapping:
+        # Mimic API Gateway path prefix (allows switching envs between local and AWS in Postman)
+        contextPath: /auth-service/*

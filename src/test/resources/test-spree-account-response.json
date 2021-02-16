@@ -1,0 +1,45 @@
+{
+    "data": {
+        "id": "1",
+        "type": "user",
+        "attributes": {
+            "email": "spree@example.com",
+            "first_name": "Johnny",
+            "last_name": "Walker",
+            "completed_orders": 0
+        },
+        "relationships": {
+            "default_billing_address": {
+                "data": {
+                    "id": "1",
+                    "type": "address"
+                }
+            },
+            "default_shipping_address": {
+                "data": null
+            }
+        }
+    },
+    "included": [
+        {
+            "id": "1",
+            "type": "address",
+            "attributes": {
+                "firstname": "Eddie",
+                "lastname": "Ed",
+                "address1": "22 Accacia Avenue",
+                "address2": "The place",
+                "city": "Utopia",
+                "zipcode": "AB12 3ED",
+                "phone": "123456",
+                "state_name": "Buckinghamshire",
+                "company": "Maiden",
+                "country_name": "United Kingdom",
+                "country_iso3": "GBR",
+                "country_iso": "GB",
+                "label": null,
+                "state_code": "ENG"
+            }
+        }
+    ]
+}
