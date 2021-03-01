@@ -23,6 +23,7 @@ logging:
 server:
   port: 9040
   tomcat:
+    relaxed-query-chars: "[,]"
     accesslog:
       enabled: true
 
@@ -55,3 +56,7 @@ camel:
       mapping:
         # Mimic API Gateway path prefix (allows switching envs between local and AWS in Postman)
         contextPath: /auth-service/*
+
+logging:
+  level:
+    uk.gov.crowncommercial.dsd.api.catalogue: DEBUG       
