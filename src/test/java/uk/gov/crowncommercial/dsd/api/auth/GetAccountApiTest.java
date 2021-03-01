@@ -21,10 +21,14 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
+/**
+ * Get Account Tests.
+ *
+ */
 class GetAccountApiTest extends AbstractAccountApiTest {
 
   @Test
-  void getAccountAuthorised() throws Exception {
+  void getAccount() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
         UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount

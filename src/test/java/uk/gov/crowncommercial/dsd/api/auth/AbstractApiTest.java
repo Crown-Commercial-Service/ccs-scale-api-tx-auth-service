@@ -13,6 +13,10 @@ import org.springframework.test.context.ActiveProfiles;
 import com.github.tomakehurst.wiremock.client.WireMock;
 import io.restassured.RestAssured;
 
+/**
+ * Shared abstract test superclass.
+ *
+ */
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("test")
 @DirtiesContext

@@ -22,6 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
+/**
+ * Refresh OAuth Token Tests.
+ *
+ */
 class RefreshTokenApiTest extends AbstractOauthApiTest {
 
   private static final String REFRESH_TOKEN_BODY_REQUEST =

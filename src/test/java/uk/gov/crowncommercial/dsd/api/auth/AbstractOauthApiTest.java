@@ -4,6 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
 import io.restassured.RestAssured;
 
+/**
+ * Abstract superclass for testing '/oauth2' resources.
+ *
+ */
 abstract class AbstractOauthApiTest extends AbstractApiTest {
 
   @Value("${api.paths.base.oauth}")

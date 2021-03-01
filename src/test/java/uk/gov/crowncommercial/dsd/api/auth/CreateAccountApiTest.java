@@ -22,13 +22,17 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
+/**
+ * Create Account Tests.
+ *
+ */
 class CreateAccountApiTest extends AbstractAccountApiTest {
 
   static final String CREATE_ACCOUNT_BODY_REQUEST =
       "{\"user\": {\"email\": \"testuser@email\",\"password\": \"pass123\",\"password_confirmation\": \"pass123\",\"first_name\": \"Test\",\"last_name\": \"User\"}}";
 
   @Test
-  void updateAccountAuthorised() throws Exception {
+  void createAccount() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
         UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount);

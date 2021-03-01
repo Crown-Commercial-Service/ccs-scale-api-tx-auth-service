@@ -4,6 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Value;
 import io.restassured.RestAssured;
 
+/**
+ * Abstract superclass for testing '/account' resources.
+ *
+ */
 abstract class AbstractAccountApiTest extends AbstractApiTest {
 
   @Value("${api.paths.base.catalog}")

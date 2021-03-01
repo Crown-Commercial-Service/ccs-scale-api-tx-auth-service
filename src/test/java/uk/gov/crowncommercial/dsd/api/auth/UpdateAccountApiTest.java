@@ -22,12 +22,16 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
+/**
+ * Uodate Account Tests.
+ *
+ */
 class UpdateAccountApiTest extends AbstractAccountApiTest {
 
   static final String UPDATE_ACCOUNT_BODY_REQUEST = "{\"user\": {\"last_name\": \"Bravo\"}}";
 
   @Test
-  void updateAccountAuthorised() throws Exception {
+  void updateAccount() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
         UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount);

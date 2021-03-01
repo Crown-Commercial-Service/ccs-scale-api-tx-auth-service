@@ -22,6 +22,10 @@ import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
+/**
+ * Get OAuth Token Tests.
+ *
+ */
 class GetTokenApiTest extends AbstractOauthApiTest {
 
   private static final String GET_TOKEN_BODY_REQUEST =
