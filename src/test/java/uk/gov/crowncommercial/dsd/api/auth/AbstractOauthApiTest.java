@@ -12,6 +12,12 @@ abstract class AbstractOauthApiTest extends AbstractApiTest {
   @Value("${spree.api.paths.base.oauth}")
   String spreeApiOauthBasePath;
 
+  @Value("${api.paths.token}")
+  String apiToken;
+
+  @Value("${spree.api.paths.token}")
+  String spreeApiPathToken;
+
   @Override
   @BeforeEach
   public void beforeEach() {

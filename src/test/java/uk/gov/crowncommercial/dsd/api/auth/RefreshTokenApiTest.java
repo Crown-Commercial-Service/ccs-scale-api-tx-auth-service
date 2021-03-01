@@ -18,7 +18,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
@@ -28,17 +27,11 @@ class RefreshTokenApiTest extends AbstractOauthApiTest {
   private static final String REFRESH_TOKEN_BODY_REQUEST =
       "{\"grant_type\": \"refresh_token\",\"refresh_token\": \"BkDlx7RvG4rNHQZ9FjuS2gnl63D7l4DbthKY3ge21sc\"}";
 
-  @Value("${api.paths.token}")
-  private String apiRefreshToken;
-
-  @Value("${spree.api.paths.token}")
-  private String spreeApiPathGetToken;
-
   @Test
   void refreshToken() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
-        UriComponentsBuilder.fromUriString(spreeApiOauthBasePath + spreeApiPathGetToken);
+        UriComponentsBuilder.fromUriString(spreeApiOauthBasePath + spreeApiPathToken);
     final String spreeUri = uriBuilder.build().toString();
 
     stubFor(
@@ -57,7 +50,7 @@ class RefreshTokenApiTest extends AbstractOauthApiTest {
       .header(AUTHORIZATION, AUTH_BEARER_TOKEN)
       .body(REFRESH_TOKEN_BODY_REQUEST)
     .when()
-      .post(apiRefreshToken)
+      .post(apiToken)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)

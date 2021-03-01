@@ -18,7 +18,6 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
@@ -28,17 +27,11 @@ class GetTokenApiTest extends AbstractOauthApiTest {
   private static final String GET_TOKEN_BODY_REQUEST =
       "{\"grant_type\": \"password\",\"username\": \"Jack\",\"password\": \"Daniels\"}";
 
-  @Value("${api.paths.token}")
-  private String apiGetToken;
-
-  @Value("${spree.api.paths.token}")
-  private String spreeApiPathGetToken;
-
   @Test
   void getToken() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
-        UriComponentsBuilder.fromUriString(spreeApiOauthBasePath + spreeApiPathGetToken);
+        UriComponentsBuilder.fromUriString(spreeApiOauthBasePath + spreeApiPathToken);
     final String spreeUri = uriBuilder.build().toString();
 
     stubFor(
@@ -57,7 +50,7 @@ class GetTokenApiTest extends AbstractOauthApiTest {
       .header(AUTHORIZATION, AUTH_BEARER_TOKEN)
       .body(GET_TOKEN_BODY_REQUEST)
     .when()
-      .post(apiGetToken)
+      .post(apiToken)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)

@@ -17,18 +17,11 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
 class GetAccountApiTest extends AbstractAccountApiTest {
-
-  @Value("${api.paths.account}")
-  private String apiGetAccount;
-
-  @Value("${spree.api.paths.account}")
-  private String spreeApiPathGetAccount;
 
   @Test
   void getAccountAuthorised() throws Exception {

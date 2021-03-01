@@ -18,22 +18,14 @@ import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import java.util.concurrent.TimeUnit;
 import org.apache.camel.builder.NotifyBuilder;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.web.util.UriComponentsBuilder;
 import io.restassured.http.ContentType;
 
 class CreateAccountApiTest extends AbstractAccountApiTest {
 
-
   static final String CREATE_ACCOUNT_BODY_REQUEST =
       "{\"user\": {\"email\": \"testuser@email\",\"password\": \"pass123\",\"password_confirmation\": \"pass123\",\"first_name\": \"Test\",\"last_name\": \"User\"}}";
-
-  @Value("${api.paths.account}")
-  private String apiGetAccount;
-
-  @Value("${spree.api.paths.account}")
-  private String spreeApiPathGetAccount;
 
   @Test
   void updateAccountAuthorised() throws Exception {
@@ -51,8 +43,7 @@ class CreateAccountApiTest extends AbstractAccountApiTest {
     final NotifyBuilder notifyBuilder = new NotifyBuilder(camelContext).whenDone(1).create();
 
     /*
-     * Update account, all attributes tested (note: very limited response specified in CCS API
-     * currently)
+     * Create account, all attributes tested
      */
     // @formatter:off
     given()
@@ -63,7 +54,21 @@ class CreateAccountApiTest extends AbstractAccountApiTest {
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)
-      .body("email", is("spree@example.com"));
+      .body("email", is("spree@example.com"))
+      .body("addresses[0].id", is("1"))
+      .body("addresses[0].firstname", is("Eddie"))
+      .body("addresses[0].lastname", is("Ed"))
+      .body("addresses[0].address1", is("22 Acacia Avenue"))
+      .body("addresses[0].address2", is("The place"))
+      .body("addresses[0].city", is("Utopia"))
+      .body("addresses[0].postcode", is("AB12 3ED"))
+      .body("addresses[0].phone", is("0123 888666"))
+      .body("addresses[0].county", is("Buckinghamshire"))
+      .body("addresses[0].countryName", is("United Kingdom"))
+      .body("addresses[0].countryIso3", is("GBR"))
+      .body("addresses[0].company", is("Maiden"))
+      .body("addresses[0].defaultBillingAddress", is(true))
+      .body("addresses[0].defaultShippingAddress", is(false));
     // @formatter:on
 
     // Assert exchange done before verifying external API call
