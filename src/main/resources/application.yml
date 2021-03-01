@@ -23,7 +23,6 @@ logging:
 server:
   port: 9040
   tomcat:
-    relaxed-query-chars: "[,]"
     accesslog:
       enabled: true
 
