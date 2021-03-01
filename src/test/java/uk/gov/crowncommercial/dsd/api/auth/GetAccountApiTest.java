@@ -27,7 +27,7 @@ class GetAccountApiTest extends AbstractAccountApiTest {
   void getAccountAuthorised() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
-        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathGetAccount
+        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount
             + "?include=default_billing_address&default_shipping_address");
     final String spreeUri = uriBuilder.build().toString();
 
@@ -44,7 +44,7 @@ class GetAccountApiTest extends AbstractAccountApiTest {
     given()
       .header(AUTHORIZATION, AUTH_BEARER_TOKEN)
     .when()
-      .get(apiGetAccount)
+      .get(apiAccount)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)

@@ -24,13 +24,13 @@ import io.restassured.http.ContentType;
 
 class UpdateAccountApiTest extends AbstractAccountApiTest {
 
-  static final String UPDATE_ACCOUNT_BODY_REQUEST = "{\"user\": {\"last_name\": \"Walker7\"}}";
+  static final String UPDATE_ACCOUNT_BODY_REQUEST = "{\"user\": {\"last_name\": \"Bravo\"}}";
 
   @Test
   void updateAccountAuthorised() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
-        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathGetAccount);
+        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount);
     final String spreeUri = uriBuilder.build().toString();
 
     stubFor(
@@ -50,7 +50,7 @@ class UpdateAccountApiTest extends AbstractAccountApiTest {
       .header(AUTHORIZATION, AUTH_BEARER_TOKEN)
       .body(UPDATE_ACCOUNT_BODY_REQUEST)
     .when()
-      .patch(apiGetAccount)
+      .patch(apiAccount)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)

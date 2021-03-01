@@ -13,10 +13,10 @@ abstract class AbstractAccountApiTest extends AbstractApiTest {
   String spreeApiCatalogBasePath;
 
   @Value("${api.paths.account}")
-  String apiGetAccount;
+  String apiAccount;
 
   @Value("${spree.api.paths.account}")
-  String spreeApiPathGetAccount;
+  String spreeApiPathAccount;
 
   @Override
   @BeforeEach

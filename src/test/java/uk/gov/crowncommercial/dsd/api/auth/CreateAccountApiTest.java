@@ -31,7 +31,7 @@ class CreateAccountApiTest extends AbstractAccountApiTest {
   void updateAccountAuthorised() throws Exception {
 
     final UriComponentsBuilder uriBuilder =
-        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathGetAccount);
+        UriComponentsBuilder.fromUriString(spreeApiCatalogBasePath + spreeApiPathAccount);
     final String spreeUri = uriBuilder.build().toString();
 
     stubFor(
@@ -50,7 +50,7 @@ class CreateAccountApiTest extends AbstractAccountApiTest {
       .header(AUTHORIZATION, AUTH_BEARER_TOKEN)
       .body(CREATE_ACCOUNT_BODY_REQUEST)
     .when()
-      .post(apiGetAccount)
+      .post(apiAccount)
     .then()
       .statusCode(SC_OK)
       .contentType(ContentType.JSON)
