@@ -1,1 +1,1 @@
-SPREE_API_HOST: http://dummy.example.com
+SPREE_API_HOST: http://localhost:${wiremock.server.port}

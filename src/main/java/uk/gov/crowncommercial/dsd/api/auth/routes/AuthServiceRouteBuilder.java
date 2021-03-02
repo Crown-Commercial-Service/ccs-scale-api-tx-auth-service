@@ -11,6 +11,7 @@ import org.apache.camel.model.dataformat.JsonLibrary;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -108,6 +109,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .marshal().json()
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.oauth}}{{spree.api.paths.token}}"))
+      .setHeader(HttpHeaders.ACCEPT, constant(MediaType.APPLICATION_JSON_VALUE))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(TokenResponse.class))
@@ -126,6 +128,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .log(LoggingLevel.INFO, "Endpoint get-account invoked")
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.GET))
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.storefront}}{{spree.api.paths.account}}?include=default_billing_address&default_shipping_address"))
+      .setHeader(HttpHeaders.ACCEPT, constant(MediaType.APPLICATION_JSON_VALUE))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
@@ -146,6 +149,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.POST))
       .marshal().json(JsonLibrary.Jackson)
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.storefront}}{{spree.api.paths.account}}"))
+      .setHeader(HttpHeaders.ACCEPT, constant(MediaType.APPLICATION_JSON_VALUE))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
@@ -167,6 +171,7 @@ public class AuthServiceRouteBuilder extends EndpointRouteBuilder {
       .setHeader(Exchange.HTTP_METHOD, constant(HttpMethod.PATCH))
       .marshal().json(JsonLibrary.Jackson)
       .setHeader(Exchange.HTTP_URI, simple("{{SPREE_API_HOST}}{{spree.api.paths.base.storefront}}{{spree.api.paths.account}}"))
+      .setHeader(HttpHeaders.ACCEPT, constant(MediaType.APPLICATION_JSON_VALUE))
       .to(DEBUG_LOG_MSG)
       .to(SPREE_DUMMY_ENDPOINT)
       .unmarshal(new JacksonDataFormat(Account.class))
