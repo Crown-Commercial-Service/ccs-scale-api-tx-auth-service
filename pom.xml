@@ -7,7 +7,7 @@
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>2.4.2</version>
-		<relativePath /> <!-- lookup parent from repository -->
+		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>uk.gov.crowncommercial.dsd</groupId>
 	<artifactId>ccs-scale-api-tx-auth-service</artifactId>
@@ -16,7 +16,7 @@
 	<description>CCS Scale API Transformation Authorisation Service</description>
 	<properties>
 		<java.version>11</java.version>
-		<camel.version>3.7.1</camel.version>
+		<camel.version>4.4.0</camel.version>
 		<junit-platform-surefire-provider.version>1.3.2</junit-platform-surefire-provider.version>
 		<spring-cloud-contract-wiremock.version>3.0.1</spring-cloud-contract-wiremock.version>
 	</properties>
